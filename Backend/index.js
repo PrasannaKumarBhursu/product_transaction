@@ -3,6 +3,8 @@ const axios = require('axios');
 const express = require('express');
 const app = express();
 app.use(express.json());
+const cors = require('cors');
+app.use(cors());
 
 // Define the schema for your product
 const productSchema = new mongoose.Schema({
@@ -61,14 +63,49 @@ mongoose.connect('mongodb+srv://prasannakumarbhursu:1prasanna324@course-selling.
     .then(async () => {
         console.log('Connected to MongoDB');
         // Call the function to save products to the database
-        await fetchDataAndSaveToDB();
+        // await fetchDataAndSaveToDB();
     })
     .catch((err) => console.error('Error connecting to MongoDB:', err));
 
 
 app.get('/products', async (req, res) => {
     const allProducts = await Product.find({});
-    res.json({ allProducts });
+    res.json( allProducts );
 });
 
-app.listen(3005, () => console.log('Server running on port 3005'));
+
+
+// app.get('/products', async (req, res) => {
+//     try {
+//         const { month } = req.query;
+
+//         let aggregationPipeline = [];
+
+//         if (month) {
+//             const monthNumber = parseInt(month); // Parse the month from string to number
+
+//             // Add an aggregation stage to match the month across all years
+//             aggregationPipeline.push({
+//                 $addFields: {
+//                     month: { $month: '$dateOfSale' } // Extract month from dateOfSale field
+//                 }
+//             });
+
+//             aggregationPipeline.push({
+//                 $match: {
+//                     month: monthNumber // Filter based on the extracted month
+//                 }
+//             });
+//         }
+
+//         const products = await Product.aggregate(aggregationPipeline);
+
+//         res.json(products);
+//     } catch (error) {
+//         res.status(500).json({ error: 'Internal Server Error' });
+//     }
+// });
+
+
+
+app.listen(3004, () => console.log('Server running on port 3005'));
