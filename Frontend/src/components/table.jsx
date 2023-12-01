@@ -10,6 +10,41 @@ import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import Box from '@mui/material/Box';
 
+
+
+
+const SalesStatistics = ({ selectedMonth, filteredMonth }) => {
+    // Calculate total sales, total sold items, and total not sold items
+    let totalSales = 0;
+    let totalSoldItems = 0;
+    let totalNotSoldItems = 0;
+
+    filteredMonth.forEach((row) => {
+        totalSales += row.price; // Assuming 'price' is the field representing the sale amount
+
+        if (row.sold) {
+            totalSoldItems++;
+        } else {
+            totalNotSoldItems++;
+        }
+    });
+
+    return (
+        <div>
+            <h3>Statistics: {selectedMonth}</h3>
+            <p>Total Sales: {totalSales}</p>
+            <p>Total Sold Items: {totalSoldItems}</p>
+            <p>Total Not Sold Items: {totalNotSoldItems}</p>
+        </div>
+    );
+};
+
+
+
+
+
+
+
 export default function DynamicTable() {
     const [rowData, setRowData] = useState([]);
     const [searchValue, setSearchValue] = useState('');
@@ -36,13 +71,8 @@ export default function DynamicTable() {
         'July', 'August', 'September', 'October', 'November', 'December'
     ];
 
+    const filteredMonth = rowData.filter((row) => {
 
-    const filteredData = rowData.filter((row) => {
-        const matchesSearch = (
-            row.title.toLowerCase().includes(searchValue.toLowerCase()) ||
-            row.description.toLowerCase().includes(searchValue.toLowerCase()) ||
-            row.price.toString().toLowerCase().includes(searchValue.toLowerCase())
-        );
 
 
         const rowDate = new Date(row.dateOfSale);
@@ -51,10 +81,28 @@ export default function DynamicTable() {
         const matchesMonth = rowMonth === month;
 
 
-        return matchesSearch && matchesMonth;
+        return matchesMonth;
     });
 
- 
+    // Assuming you have the 'filteredMonth' array containing the filtered data for a specific month
+
+
+
+    const filteredData = filteredMonth.filter((row) => {
+        const matchesSearch = (
+            row.title.toLowerCase().includes(searchValue.toLowerCase()) ||
+            row.description.toLowerCase().includes(searchValue.toLowerCase()) ||
+            row.price.toString().toLowerCase().includes(searchValue.toLowerCase())
+        );
+
+
+
+
+
+        return matchesSearch;
+    });
+
+
 
     const handleSearchChange = (event) => {
         setSearchValue(event.target.value);
@@ -128,6 +176,9 @@ export default function DynamicTable() {
 
                 </Table>
             </TableContainer>
+
+
+            <SalesStatistics selectedMonth={selectedMonth} filteredMonth={filteredMonth} />
 
         </div>
     );
